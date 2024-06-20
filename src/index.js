@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "./common/styles/tailwind.css";
+import { Toaster } from "sonner";
+import { Provider } from 'react-redux';
+import store from './Redux/store';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+    <GoogleOAuthProvider clientId="184243567332-nlp89m0i8r379ho082v8gk9kvkaq3prl.apps.googleusercontent.com">
+      <Toaster richColors position="top-left" /> 
+        <App />
+    </GoogleOAuthProvider>
+    </Provider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
