@@ -1,18 +1,26 @@
 import React from 'react'
 import Sidebar from '../../common/components/Sidebar/Sidebar'
-import HomeContent from './homeContent'
+import ChatPageContent from './chatPageContent'
 import Bottombar from '../../common/components/Bottombar/bottombar'
+import { useParams } from 'react-router-dom'
+import ChatContent from './chatContent'
 
-function Home() {
+function ChatPage() {
+    const {chatId } = useParams();
   return (
     <div className='flex h-screen w-full fixed'>
       <div className='flex w-full'>
         <div className=' lg:w-[20%] md:w-[30%] hidden md:block '>
           <Sidebar />
         </div>
-        <div className='lg:w-[60%] md:w-[70%] w-full h-screen overflow-hidden '>
-          <HomeContent />
-        </div>
+        {chatId  ?
+        (<div className='lg:w-[60%] md:w-[70%] w-full '>
+            <ChatContent/>
+          </div>):
+          (<div className='lg:w-[60%] md:w-[70%] w-full '>
+            <ChatPageContent />
+          </div>)
+        }
         <div className=' lg:w-[20%] hidden lg:block '>
           <Sidebar />
         </div>
@@ -25,4 +33,4 @@ function Home() {
   )
 }
 
-export default Home
+export default ChatPage

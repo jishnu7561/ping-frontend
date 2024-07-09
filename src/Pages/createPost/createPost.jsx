@@ -5,7 +5,7 @@ import CreatePostContent from './createPostContent'
 
 function CreatePost() {
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex min-h-screen fixed'>
       <div className='flex w-screen'>
         <div className=' lg:w-[20%] md:w-[30%] hidden md:block '>
           <Sidebar />

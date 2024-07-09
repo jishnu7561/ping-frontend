@@ -53,10 +53,10 @@ function AdminSidebar() {
             <p className='md:hidden lg:block'>Users</p>
           </li>
           </NavLink>
-          <NavLink to={"/notification"}>
-            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/notification' && 'bg-green'} cursor-pointer`}>
-              <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/notification' && 'text-white'} ${!pathname === '/notification' && 'md:hidden'}`} ></i>
-              <p className='md:hidden lg:block'>Notification</p>
+          <NavLink to={"/admin/reports"}>
+            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/admin/reports' && 'bg-green'} cursor-pointer`}>
+              <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/admin/reports' && 'text-white'} ${!pathname === '/admin/reports' && 'md:hidden'}`} ></i>
+              <p className='md:hidden lg:block'>Reports</p>
             </li>    
           </NavLink>
           <NavLink to={"/message"}>

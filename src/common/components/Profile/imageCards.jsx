@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import request from '../../utils/APIs/UserApis';
 import { toast } from 'sonner';
 import Slider from '../../../Pages/home/slider';
+import { useNavigate } from 'react-router-dom';
 
 function ImageCards(post) {
     const {imageUrl,liked,likesCount,postId,saved,isSave,handleSavedPost} = post;
@@ -10,6 +11,7 @@ function ImageCards(post) {
     const [isLiked, setIsLiked] = useState(liked);
     const [likes,setLikes] = useState(likesCount);
     const [isSaved, setSaved] = useState(saved);
+    const navigate = useNavigate();
 
     const [curr,setCurr] = useState(0);
     const prev = () =>
@@ -114,11 +116,12 @@ function ImageCards(post) {
 
   return (
     <div className="relative rounded-xl overflow-hidden w-60 h-56 group">
+         {/* onClick={()=>navigate(`/single-post/${postId}`)} */}
         {imageUrl.length > 1 ?
             // (<Slider imageUrl={imageUrl}></Slider>)
             (
                 <>
-        <img src={imageUrl[curr]} alt={`post image `} className="relative rounded-xl transition-all h-full" />
+        <img src={imageUrl[curr]} alt={`post image `} className="relative rounded-xl transition-all h-full"  />
         <div className='absolute inset-0 flex flex items-center justify-between p-4'>
             <button className='p-1 ' onClick={prev}>
                 <i class="fa-solid fa-arrow-left text-green"></i>
@@ -147,6 +150,12 @@ function ImageCards(post) {
                 onClick={handleLike}></i>
                 <p className='text-white'>{likes}</p>
             </div>
+            <div className='flex'>
+            <div className='flex gap-2 mr-2 items-center'>
+                <i class="fa-solid fa-image text-green text-xl cursor-pointer"
+                onClick={()=>navigate(`/single-post/${postId}`)}
+                ></i>
+            </div>
             {isSave ?
             (<div className='flex gap-2 mr-2 items-center'>
                 <i class={`fa-bookmark text-xl cursor-pointer ${isSaved ? 'fa-solid text-green' : 'fa-light text-green'}`}
@@ -161,6 +170,7 @@ function ImageCards(post) {
                 ></i>
             </div>)
             } 
+            </div>
         </div>
     </div>
   )

@@ -96,7 +96,7 @@ function Login() {
 
 
   return (
-    <div className="login-container h-dvh bg-gray-100 flex items-center justify-center bg-black">
+    <div className="login-container h-dvh  flex items-center justify-center bg-black ">
       <div className="login-form lg:w-1/4 w-11/12 max-w-md p-6 rounded-3xl shadow-md border-solid border-green border-2">
         <div className="text-center">
           <img className="mx-auto h-15 w-28" src="/images/ping.jpeg" alt="Your Logo" />

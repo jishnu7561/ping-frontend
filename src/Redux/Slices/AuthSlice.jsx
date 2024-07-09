@@ -41,6 +41,9 @@ const authSlice = createSlice ({
                 accountName: action.payload.accountName !== undefined ? action.payload.accountName : state.loggedUser.accountName,
                 email: action.payload.email !== undefined ? action.payload.email : state.loggedUser.email,
                 imageUrl:action.payload.imageUrl !== undefined ? action.payload.imageUrl : state.loggedUser.imageUrl,
+                private:action.payload.private !== undefined ? action.payload.private : state.loggedUser.private,
+                subscribed:action.payload.subscribed !== undefined ? action.payload.subscribed : state.loggedUser.subscribed,
+                subscriptionEndDate:action.payload.subscriptionEndDate !== undefined ? action.payload.subscriptionEndDate : state.loggedUser.subscriptionEndDate
               };
               state.isLoading = false;
               state.error = null;

@@ -4,58 +4,6 @@ import request, { save } from '../../common/utils/APIs/UserApis';
 import { toast } from 'sonner';
 
 function CreatePostContent() {
-  // const [images, setImages] = useState({}); // Keeping this state in case it's needed later
-  // const fileInputRef = useRef(null);
-  // const {loggedUser} = useSelector((state) => state.auth);
-  // const [imageSrc, setImageSrc] = useState("/images/file-upload.svg");
-  // const [image,setImage] = useState();
-  // const [caption,setCaption] = useState();
-  // const [tag,setTag] = useState();
-
-
-
-  // const handleImage = () => {
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.click();
-  //   }
-  // };
-
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setImage(event.target.files[0]);
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImageSrc(reader.result); // Update the image source
-  //     };
-  //     reader.readAsDataURL(file); // Read the file as a data URL
-  //   }
-  // };
-
-  // const submitHandler = async (e) => {
-  //   e.preventDefault();
-  //   console.log("caption:"+caption+"     "+ "tag:"+tag+"    "+"image:"+image)
-  //      request("POST",`/post/create-post/${loggedUser.id}`,
-  //       {
-  //         caption : caption,
-  //         tag :tag,
-  //         file : image
-  //       }).then((response)=>{
-  //         console.log(response.data)
-  //         toast.success(response.data.message);
-  //         setCaption('');
-  //         setImage('');
-  //         setImageSrc('');
-  //         setTag('');
-  //     }).catch((error)=>{
-  //         console.log(error);
-  //         toast.error(error)
-  //         setCaption('');
-  //         setImage('');
-  //         setImageSrc('');
-  //         setTag('');
-  //     })
-  // }
 
   const fileInputRef = useRef(null);
   const { loggedUser } = useSelector((state) => state.auth);
@@ -213,7 +161,7 @@ function CreatePostContent() {
               className="w-5 h-5 mx-auto" // Adjust image size and position as needed
               />
             ) : (
-            <span>Sign Up</span>
+            <span>Edit</span>
             )}
             </button>
           </form>

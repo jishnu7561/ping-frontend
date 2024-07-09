@@ -5,7 +5,7 @@ import Bottombar from '../Bottombar/bottombar'
 
 function Profile() {
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex min-h-screen fixed'>
       <div className='flex w-screen'>
         <div className=' lg:w-[20%] hidden md:w-[30%] md:block'>
           <Sidebar />

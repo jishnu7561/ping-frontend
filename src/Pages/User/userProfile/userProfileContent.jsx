@@ -11,12 +11,15 @@ function UserProfileContent() {
     const { userId } = useParams();
     const [isFollowing,setFollowing] = useState();
     const [followers,setFollowers] = useState([]);
+    const [isPrivate, setIsPrivate] = useState(false); // For private status
+    const [followRequestStatus, setFollowRequestStatus] = useState(null);
     const [data, setData] = useState({
       fullName:"",
       username:"",
       email:"",
       bio:"",
-      image:""
+      image:"",
+      private:""
     })
     const navigate = useNavigate();
     console.log(loggedUser.id);
@@ -30,10 +33,11 @@ function UserProfileContent() {
         // Use Promise.all to handle multiple asynchronous calls concurrently
         const fetchData = async () => {
           try {
-            const [profileResponse, postCountResponse,followResponse] = await Promise.all([
+            const [profileResponse, postCountResponse,followResponse,followRequestStatusResponse] = await Promise.all([
               request("GET", `/user/api/secure/profile/${userId}`, {}),
               request("GET", `/post/getPostCount/${userId}`, {}),
-              request("POST", `/user/api/secure/isFollowing/${loggedUser.id}`, {followingId:userId})
+              request("POST", `/user/api/secure/isFollowing/${loggedUser.id}`, {followingId:userId}),
+              request("GET", `/user/api/secure/request/followRequestStatus/${userId}`, {})
             ]);
     
             // Combine results into a single state update
@@ -44,9 +48,11 @@ function UserProfileContent() {
             }));
             setFollowers(profileResponse.data.followers.length)
             setFollowing(followResponse.data)
-            console.log(profileResponse)
-            console.log(postCountResponse)
-            console.log(followResponse.data)
+            setIsPrivate(profileResponse.data.private)
+            setFollowRequestStatus(followRequestStatusResponse.data)
+            // console.log("profile response in userProfile:",profileResponse.data)
+            // console.log("postCount response in userProfile:",postCountResponse.data)
+            // console.log("follow response in userProfile:",followResponse.data)
           } catch (error) {
             console.error('Error fetching data:', error);
             if (error.response && error.response.data.message) {
@@ -54,53 +60,56 @@ function UserProfileContent() {
             } else {
               toast('An error occurred');
             }
-            logout();
+            // logout();
           }
         };
-    
         fetchData();
       }, [userId]);
 
-      const handleFollow = async (e) =>{
-        if(isFollowing){
-            request(
-                "DELETE",
-                "/user/api/secure/unfollowUser", 
-                {
-                    followerId:loggedUser.id,
-                    followingId:userId
-                }
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setFollowing(false);
-                setFollowers(followers-1);
-            })
-            .catch(error => {
-                console.log(typeof postId)
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
-        } else{
-            request(
-                "POST",
-                "/user/api/secure/followUser", 
-                {
-                    followerId:loggedUser.id,
-                    followingId:userId
-                }
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setFollowing(true);
-                setFollowers(followers+1);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
+      const handleFollow = async () => {
+        try {
+          if (isFollowing) {
+            await request(
+              "DELETE",
+              "/user/api/secure/unfollowUser",
+              {
+                followerId: loggedUser.id,
+                followingId: userId
+              }
+            );
+            setFollowing(false);
+            setFollowers(followers - 1);
+
+          } else if (isPrivate) {
+
+            await request(
+              "POST",
+              "/user/api/secure/request/sendFollowRequest",
+              {
+                followerId: loggedUser.id,
+                followingId: userId
+              }
+            );
+            setFollowRequestStatus('PENDING');
+            toast('Follow request sent');
+          } else {
+
+            await request(
+              "POST",
+              "/user/api/secure/followUser",
+              {
+                followerId: loggedUser.id,
+                followingId: userId
+              }
+            );
+            setFollowing(true);
+            setFollowers(followers + 1);
+          }
+        } catch (error) {
+          console.error('Error updating follow status:', error);
+          toast('An error occurred');
         }
-      }
+      };
 
 
   return (
@@ -121,9 +130,13 @@ function UserProfileContent() {
             </div>
             <div className='flex text-white gap-10 items-center'>
               <p className='text-xs lg:text-xl font-light text-green'>{data.fullName}</p>
-              {isFollowing? 
-              (<button className='bg-grey text-green px-4 py-1 rounded-lg font-medium text-sm' onClick={handleFollow}>Following</button>)
-            :(<button className='bg-green text-black px-4 py-1 rounded-lg font-medium text-sm' onClick={handleFollow}>Follow</button>)}
+              {isFollowing ? (
+                  <button className='bg-grey text-green px-4 py-1 rounded-lg font-medium text-sm' onClick={handleFollow}>Following</button>
+                ) : followRequestStatus === 'PENDING' ? (
+                  <button className='bg-grey text-yellow px-4 py-1 rounded-lg font-medium text-sm' disabled>Requested</button>
+                ) : (
+                  <button className='bg-green text-black px-4 py-1 rounded-lg font-medium text-sm' onClick={handleFollow}>Follow</button>
+                )}
             </div>
           </div>
           <div className='flex justify-between' >
@@ -145,7 +158,11 @@ function UserProfileContent() {
     </div>
   </div>
   <div className='h-full px-10 pb-16'>
-      <ProfileCard userId={userId}/>
+  {data.private ? (
+          <p className='text-center text-white'>This account is private. Follow to see their posts.</p>
+        ) : (
+          <ProfileCard userId={userId} />
+        )}
   </div>
 </div>
   )

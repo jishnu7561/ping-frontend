@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import request from '../../../common/utils/APIs/UserApis';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 
 function UserManagement() {
@@ -19,34 +20,49 @@ function UserManagement() {
     //     }
     //   };
 
+
     const manageBlock = async (id) => {
-      console.log("clicked");
-      try {
-        const response = await request("GET", `/user/api/admin/block-user/${id}`, {});
-        console.log(response);
-        if (response.data?.message) {
-          const message = response.data.message;
-          if (message.includes("Success")) {
-            toast.success("successfully edited");
-            // Update the user status in the alluser array
-            setAllusers((prevUsers) => {
-              return prevUsers.map(user => {
-                if (user.id === id) {
-                  console.log('User found:', user);
-                  return { ...user, blocked: !user.blocked }; // Toggle the enabled status
-                }
-                return user;
-              });
-            });
-          } else {
-            toast.error(message);
+
+      // Show confirmation dialog
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this action!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, proceed!",
+        cancelButtonText: "Cancel",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await request("GET", `/user/api/admin/block-user/${id}`, {});
+            console.log(response);
+            if (response.data?.message) {
+              const message = response.data.message;
+              if (message.includes("Success")) {
+                toast.success("successfully edited");
+                // Update the user status in the alluser array
+                setAllusers((prevUsers) => {
+                  return prevUsers.map(user => {
+                    if (user.id === id) {
+                      console.log('User found:', user);
+                      return { ...user, blocked: !user.blocked }; // Toggle the enabled status
+                    }
+                    return user;
+                  });
+                });
+              } else {
+                toast.error(message);
+              }
+            } else {
+              console.error("Unexpected response format");
+            }
+          } catch (error) {
+            console.error("Error:", error);
           }
-        } else {
-          console.error("Unexpected response format");
         }
-      } catch (error) {
-        console.error("Error:", error);
-      }
+      });
     };
 
 

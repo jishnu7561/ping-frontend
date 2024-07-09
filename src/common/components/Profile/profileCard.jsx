@@ -4,7 +4,7 @@ import request from '../../utils/APIs/UserApis';
 import { toast } from 'sonner';
 import { useSelector } from 'react-redux';
 
-function ProfileCard({userId}) {
+function ProfileCard({userId,handleChange}) {
 
     const {loggedUser} = useSelector((state)=>state.auth);
     const [posts, setPosts] = useState([]);
@@ -18,11 +18,11 @@ function ProfileCard({userId}) {
             // console.log("id of user  ="+userId)
             id = loggedUser.id;
         }
-        console.log("id of user="+id)
+        // console.log("id of user="+id)
         if(isSaved){ 
             request("GET","/post/save/getSavedPosts",{})
             .then((response)=>{
-                console.log(response.data)
+                // console.log("saved post: ",response.data)
                 setPosts(response.data);
             }).catch((error)=>{
                 toast.error(error);
@@ -31,7 +31,6 @@ function ProfileCard({userId}) {
         } else {
             request("GET",`/post/getUserPosts/${id}`,{})
             .then((response)=>{
-                console.log("userPost :"+response.data)
                 setPosts(response.data);
             }).catch((error)=>{
                 toast.error(error)
@@ -39,6 +38,7 @@ function ProfileCard({userId}) {
             })
         }
     },[isSaved,posts])
+    // isSaved,posts
 
     const handleSaved = (data) => () => {
         console.log(posts);
@@ -51,6 +51,7 @@ function ProfileCard({userId}) {
 
     const handleSavedPost = () => {
         setPosts(null);
+        handleChange();
     }
 
 

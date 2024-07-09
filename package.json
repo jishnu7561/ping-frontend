@@ -5,10 +5,16 @@
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.4",
+    "@stomp/stompjs": "^7.0.0",
+    "@stripe/stripe-js": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.0",
+    "emoji-picker-react": "^4.11.1",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.10.0",
+    "framer-motion": "^11.2.13",
     "primereact": "^10.6.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -17,8 +23,10 @@
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
+    "sockjs-client": "^1.6.1",
     "sonner": "^1.4.41",
-    "sweetalert2": "^11.11.0",
+    "stompjs": "^2.3.3",
+    "sweetalert2": "^11.12.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

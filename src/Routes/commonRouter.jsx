@@ -11,6 +11,10 @@ import NotFound from '../Pages/NotFound'
 import EditProfile from '../Pages/User/editProfile/editProfile'
 import CreatePost from '../Pages/createPost/createPost'
 import UserProfile from '../Pages/User/userProfile/userProfile'
+import SinglePost from '../Pages/User/singlePost/singlePost'
+import EditPost from '../Pages/User/editPost/editPost'
+import ChatPage from '../Pages/chatPage/chatPage'
+import ChatPageContent from '../Pages/chatPage/chatPageContent'
 
 function CommonRouter() {
   return (
@@ -25,8 +29,12 @@ function CommonRouter() {
           <Route path='/explore' element={<Explore/>}/>
           <Route path='/edit-profile' element={<EditProfile/>}/>
           <Route path='/create-post' element={<CreatePost/>} />
+          <Route path='/single-post/:postId' element={<SinglePost/>} />
+          <Route path='/edit-post/:postId' element={<EditPost/>} />
+          <Route path='/chat' element={<ChatPage/>} />
+          <Route path="/chat/:chatId" element={<ChatPage />} />
         </Route>
-        <Route path="/*" element={<NotFound />} />
+        {/* <Route path="/*" element={<NotFound />} /> */}
     </Routes>
   )
 }

@@ -8,9 +8,9 @@ function Explore() {
   return (
     <div className='flex '>
       <div className='flex'>
-        <div className='flex-auto lg:w-[20%] hidden md:block fixed top-0'>
+        {/* <div className='flex-auto lg:w-[20%] hidden md:block fixed top-0'>
           <Sidebar />
-        </div>
+        </div> */}
         <ExploreContent />
       <div className='md:hidden sm:block'>
         <Bottombar/>
