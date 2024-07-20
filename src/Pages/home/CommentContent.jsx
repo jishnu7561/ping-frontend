@@ -154,6 +154,7 @@ import { toast } from 'sonner';
 
 
 const CommentContent = ({ handleClose, postId, comments, setComments }) => {
+  // const [allComments,setAllComments] = useState(comments)
   const [comment, setComment] = useState('');
   const [reply, setReply] = useState({
     reply: false,
@@ -162,6 +163,10 @@ const CommentContent = ({ handleClose, postId, comments, setComments }) => {
   });
 
   const commentHandler = async () => {
+    if(!comment.trim()) {
+      toast.error("Comment cannot be empty")
+      return;
+    }
     if (!reply.reply) {
       try {
         const response = await request("POST", "/post/comment/addComments", {
@@ -169,12 +174,16 @@ const CommentContent = ({ handleClose, postId, comments, setComments }) => {
           comment: comment,
         });
         toast.success("Comment added successfully!");
+        console.log("resposne for added comment: ",response.data)
+        setComments(response.data.commentRequest);
         setComment('');
+        
 
       } catch (error) {
         console.error('Error adding comment:', error);
         toast.error(error.response ? error.response.data.message : error.message);
       }
+      console.log("comments are: ",comments)
     } else {
       try {
         const response = await request("POST", "/post/comment/addReply", {
@@ -194,7 +203,7 @@ const CommentContent = ({ handleClose, postId, comments, setComments }) => {
   };
 
   const renderComments = (comments) => {
-    return comments.map(comment => (
+    return comments?.map(comment => (
       <div key={comment.commentId} className='flex flex-col gap-3'>
         <div className='flex gap-3'>
           <img src={comment.user.imageUrl} alt="profile" className='rounded-full w-12 h-12' />

@@ -1,54 +1,36 @@
-import React,{useEffect,useState} from 'react'
-import Loader from '../../common/components/Loader';
-import PostCard from './PostCard';
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import request,{setAuthToken} from '../../common/utils/APIs/UserApis';
+import { useNavigate, useParams } from 'react-router-dom';
+import PostCard from '../../home/PostCard';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import CommentContent from './CommentContent';
+import request from '../../../common/utils/APIs/UserApis';
+import Loader from '../../../common/components/Loader';
+import CommentContent from '../../home/CommentContent';
+import AdminPostCard from './adminPostCard';
 
-function HomeContent() {
+function UserPostDetails() {
 
     const [isPostLoading,setIsPosLoading] = useState(true);
     const {loggedUser} = useSelector((state)=>state.auth)
-    const [posts, setPosts] = useState([]);
+    const [post, setPost] = useState();
     const [comments, setComments] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null);
     const navigate = useNavigate();
+    const { postId, reportId } = useParams();
 
-    const logout = () => {
-        setAuthToken(null);
-        localStorage.removeItem('logged_user');
-        navigate("/login")
-      }
-
-    useEffect(() => {
+    useEffect(()=>{
         request(
             "GET",
-            `/post/getAllPosts/${loggedUser.id}`, 
+            `/post/getPostDetailsOfSaved/${postId}`,
             {}
-        )
-        .then(response => {
-            console.log('Received post data:', response);
-            setPosts(response.data)
-            setIsPosLoading(false);
-            
-            // console.log("data:::::"+response.data[0].image);
-            // setImage(response.data[0].image);
-            // setsecImage(response.data[1].image)
+        ).then((response)=>{
+            setPost(response.data);
+            setIsPosLoading(false)
+            console.log("response of single post :",response);
+        }).catch((error)=>{
+            toast.error(error);
         })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            // logout();
-            toast.error(error.response? error.response.data.message : error);
-        });
-    }, [loggedUser.id]);
-
-
-    // const [showPopup, setShowPopup] = useState(false); 
-    // const togglePopup = () => {
-    //     setShowPopup(!showPopup);
-    //   };
+    },[postId])
 
 
     const fetchComments = async (postId) => {
@@ -57,7 +39,7 @@ function HomeContent() {
         try {
             const response = await request("GET", `/post/comment/getCommentsByPostId/${postId}`,{});
             console.log("Fetching comments :", response.data);
-            setComments(response.data);
+            setComments(response);
             setSelectedPost(postId);
         } catch (error) {
             console.error('Error fetching comments:', error);
@@ -65,18 +47,17 @@ function HomeContent() {
         }
     };
 
-    
+
   return (
     <div className='flex bg-grey w-full h-full overflow-y-auto justify-center md:px-2 px-5' style={{ '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
-        <div className='home-container pb-20'>
-            <div className='home-posts pb-20'>
-                <h2 className='font-bold md:font-medium text-white w-full p-3 text-xl lg:px-10' >Home Feed</h2>
+        <div className='home-container pb-20 md:w-[80%] w-[100%]'>
+            <div className='home-posts pb-20 '>
+                {/* <h2 className='font-bold md:font-medium text-white w-full p-3 text-xl lg:px-10'>Home Feed</h2> */}
                 {isPostLoading ? (
                         <Loader />
                     ) : (
-                        <ul className='flex flex-col'>
-                            {posts?.map((post, index) => (
-                                <PostCard
+                        <ul className='flex flex-col pt-5'>
+                                <AdminPostCard
                                 key={post.postId} // Use a unique key for each post
                                 imageUrl={post.image}
                                 fullName={post.fullName}
@@ -90,30 +71,23 @@ function HomeContent() {
                                 userId={post.userId}
                                 saved={post.saved}
                                 tag={post.tag}
-                                subscribed={post.subscribed}
+                                reportId={reportId}
                                 onCommentClick={() => fetchComments(post.postId)}
                             />
-
-                            ))}
                         </ul>
                     )}
             
             </div>
         </div>
-
-      {/* Pop-up div */}
-      <div className={` overflow-hidden fixed lg:w-[60%] md:w-[70%] w-full h-[90%] bottom-0 px-2 transition-transform duration-300 ${selectedPost ? 'translate-y-0' : 'translate-y-full'} z-50`}>
+        <div className={` overflow-hidden fixed lg:w-[60%] md:w-[70%] w-full h-[90%] bottom-0 px-2 transition-transform duration-300 ${selectedPost ? 'translate-y-0' : 'translate-y-full'} z-50`}>
         <CommentContent handleClose={() => setSelectedPost(null)}
-            comments={comments}
+            comments={comments.data}
             setComments={setComments}
             postId={selectedPost}
             />
       </div>
-
-
-
     </div>
   )
 }
 
-export default HomeContent
+export default UserPostDetails

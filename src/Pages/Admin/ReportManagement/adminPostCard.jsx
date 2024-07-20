@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom'
-import request from '../../common/utils/APIs/UserApis';
+import { Link, useNavigate } from 'react-router-dom';
+import request from '../../../common/utils/APIs/UserApis';
+import Slider from 'react-slick';
 import { toast } from 'sonner';
-import Slider from './slider';
-import { Dropdown } from 'flowbite-react';
-import ReportPost from './ReportPost';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
 
-function PostCard(details) {
-    const { imageUrl, fullName, caption,subscribed, createdAt, likesCount ,profile ,accountName,postId,liked,userId,saved,tag,onCommentClick } = details;
+function AdminPostCard(details) {
+    const { imageUrl, fullName, caption,subscribed, createdAt,reportId, likesCount ,profile ,accountName,postId,liked,userId,saved,tag,onCommentClick } = details;
     const {loggedUser} = useSelector((state)=>state.auth)
     const [isLiked, setIsLiked] = useState(liked);
     const [likes,setLikes] = useState(likesCount);
@@ -16,84 +15,74 @@ function PostCard(details) {
     const [dropdown,setDropdown] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
+    const [openModal, setOpenModal] = useState(false);
+    const [reason, setReason] = useState('');
      
 
-    const handleLike = () => {
-        console.log(typeof postId);
-        if(isLiked){
-            console.log("postId:"+postId)
-            request(
-                "POST",
-                "/post/like/unLikePost", 
-                {
-                    postId:postId,
-                    userId:loggedUser.id
-                }
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setIsLiked(false);
-                setLikes(likes-1);
-            })
-            .catch(error => {
-                console.log(typeof postId)
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
-        } else{
-            request(
-                "POST",
-                "/post/like/likePost", 
-                {
-                    postId:postId,
-                    userId:loggedUser.id
-                }
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setIsLiked(true);
-                setLikes(likes+1);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
-        }
-    }
+    // const handleLike = () => {
+    //     console.log(typeof postId);
+    //     if(isLiked){
+    //         console.log("postId:"+postId)
+    //         request(
+    //             "POST",
+    //             "/post/like/unLikePost", 
+    //             {
+    //                 postId:postId,
+    //                 userId:loggedUser.id
+    //             }
+    //         )
+    //         .then(response => {
+    //             console.log('Received data:', response);
+    //             setIsLiked(false);
+    //             setLikes(likes-1);
+    //         })
+    //         .catch(error => {
+    //             console.log(typeof postId)
+    //             console.error('Error fetching data:', error);
+    //             toast(error);
+    //         });
+    //     } else{
+    //         request(
+    //             "POST",
+    //             "/post/like/likePost", 
+    //             {
+    //                 postId:postId,
+    //                 userId:loggedUser.id
+    //             }
+    //         )
+    //         .then(response => {
+    //             console.log('Received data:', response);
+    //             setIsLiked(true);
+    //             setLikes(likes+1);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching data:', error);
+    //             toast(error);
+    //         });
+    //     }
+    // }
 
-    const handleSave = () => {
+    const handleDelete = () => {
         console.log(typeof postId);
-        if(isSaved){
-            console.log("postId:"+postId)
-            request(
-                "DELETE",
-                `/post/save/unSavePost/${postId}`,{}
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setSaved(false);
-                // setLikes(likes-1);
-            })
-            .catch(error => {
-                console.log(typeof postId)
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
-        } else{
-            request(
-                "POST",
-                `/post/save/savePost/${postId}`,{}
-            )
-            .then(response => {
-                console.log('Received data:', response);
-                setSaved(true);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                toast(error);
-            });
+        alert(postId)
+        alert(reportId)
+        
+        if(!reason.trim()){
+            toast.error("reason cannot be empty..")
+            return;
         }
-    }
+        request("POST", `/post/delete-post?postId=${postId}&reason=${reason}&reportId=${reportId}`,{})
+        .then((response) => {
+            console.log("Response for deletePost:", response);
+            setOpenModal(false)
+            toast.success("Successfully deleted.");
+            navigate("/admin/reports");
+        })
+        .catch((error) => {
+            console.error("Error deleting post:", error);
+            toast.error(error.message || "Failed to delete post."); 
+        });
+    };
 
     const profileLink = loggedUser.id === userId ? "/profile" : `/profile/${userId}`;
 
@@ -126,7 +115,7 @@ function PostCard(details) {
                     </div>
                 </div>
                 </div>
-                <div className="relative pr-3 flex gap-2" ref={dropdownRef}>
+                {/* <div className="relative pr-3 flex gap-2" ref={dropdownRef}>
                 <i className="fa-light fa-ellipsis-vertical text-white text-lg cursor-pointer" onClick={() => setDropdown(!dropdown)}></i>
                     {dropdown && (
                         <ul className="absolute top-full mt-2 right-0 bg-grey rounded-lg shadow-lg z-20 w-48 px-4 pb-4 text-white grid grid-cols-1 divide-y divide-light_gray" >
@@ -147,7 +136,12 @@ function PostCard(details) {
                             }
                         </ul>
                     )}
-                </div>
+                </div> */}
+                {/* <Dropdown label="Dropdown button" dismissOnClick={false} className='bg-grey border-none'>
+                    <Dropdown.Item><i className="fa-light fa-ellipsis-vertical text-white"/>Edit</Dropdown.Item>
+                    <Dropdown.Item>Account Details</Dropdown.Item>
+                    <Dropdown.Item>Report</Dropdown.Item>
+                </Dropdown> */}
             </div>
             <div className='text-xs font-thin'>
                 <p className='text-white'>{caption}</p>
@@ -172,24 +166,57 @@ function PostCard(details) {
                 <div className='flex gap-6 items-center'>
                     <div className='flex gap-2 ml-2 items-center'>    
                         <i 
-                        className={`fa-heart text-2xl cursor-pointer ${isLiked ? 'fa-solid text-green' : 'fa-light text-green'}`} 
-                        onClick={handleLike}
+                        className="fa-heart text-2xl cursor-pointer fa-solid text-green"
+                        // onClick={handleLike}
                         ></i>
                         <p className='text-white'>{likes}</p>
                     </div>
                     <i class="fa-light fa-comment text-2xl text-green"  onClick={onCommentClick}></i>
                 </div>
-                {loggedUser.id != userId &&
+                {/* {loggedUser.id != userId && */}
                 <div className='flex gap-2 mr-2 items-center'>
-                    <i class={`fa-bookmark text-xl cursor-pointer ${isSaved ? 'fa-solid text-green' : 'fa-light text-green'}`}
-                    onClick={handleSave}
+                    <i class="fa-light fa-trash text-red text-2xl cursor-pointer"
+                    onClick={()=>setOpenModal(true)}
                     ></i>
                 </div> 
-                }
+                {/* } */}
             </div>
         </div>
+
+        <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
+            <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this post?
+            </h3>
+            <div className='pb-8 pt-5'>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Enter the reason" />
+              </div>
+              <TextInput
+                id="reason"
+                placeholder="reason"
+                value={reason}
+                onChange={(event) => setReason(event.target.value)}
+                required
+              />
+            </div>
+            <div className="flex justify-center gap-4">
+              <Button className='bg-red border-none text-black cursor-pointer' onClick={handleDelete}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button className='bg-white text-black cursor-pointer border-black' onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
     </div>
   )
 }
 
-export default PostCard
+export default AdminPostCard

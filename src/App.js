@@ -3,8 +3,16 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import UserRouter from './Routes/UserRouter';
 import AdminRouter from './Routes/adminRouter';
 import CommonRouter from './Routes/commonRouter';
+import { useSelector } from 'react-redux';
+// import { initSocket } from './Pages/chatPage/websocket';
+import { useEffect } from 'react';
 
 function App() {
+//   const {loggedUser} = useSelector((state)=>state.auth)
+//   useEffect(() => {
+//     initSocket(loggedUser)
+//   }, [loggedUser])
+  
   return (
     <BrowserRouter>
       <Routes>

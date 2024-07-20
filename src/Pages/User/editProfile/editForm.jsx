@@ -53,9 +53,9 @@ function EditForm() {
         e.preventDefault();
         console.log("clicked");
         // setAuthToken(null);
-        // if (!validateForm()) {
-        //   return;
-        // }
+        if (!validateForm()) {
+          return;
+        }
         setLoading(true);
         try {
           const response = await request("POST", `/user/api/secure/update-profile/${loggedUser.id}`, {
@@ -104,6 +104,13 @@ function EditForm() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    const validImageTypes = ['image/png', 'image/jpeg'];
+    
+      if (!validImageTypes.includes(file.type)) {
+        toast.error(`${file.name} is not a valid image (png/jpeg).`);
+        return;
+      }
+
     setImage(file);
     if (file) {
       const reader = new FileReader();
@@ -116,9 +123,11 @@ function EditForm() {
 
   const uploadImage = (e) => {
     if(imageSrc == null){
-        console.log("no image")
+        console.log("please select any image")
+        toast.error("please select any image");
         return;
     }
+
     request(
         "POST",
         "/user/api/secure/uploadImage",
@@ -136,6 +145,30 @@ function EditForm() {
         console.log(error);
     })
 }
+
+const validateForm = () => {
+  // Validation for each field
+  if (!fullname.trim() || fullname.length < 4) {
+      toast.error('Fullname must be at least 4 characters')
+    return false;
+  }
+
+  if (!username.trim() || username.length < 3) {
+    toast.error('Username must be at least 4 characters')
+      return false;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    toast.error('Invalid email address')
+    return false;
+  }
+  if (!bio.trim()) {
+    toast.error('Bio must be filled');
+    return false; 
+  }
+  return true;
+};
+
 
   return (
     <div className='w-full h-full lg:bg-grey bg-black overflow-y-auto' style={{ '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>

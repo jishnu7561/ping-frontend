@@ -90,3 +90,21 @@
 
 
 
+
+// socket.ts
+import { io } from "socket.io-client";
+
+
+// const SOCKET_URL = 'http://localhost:8085/ws'; 
+// // const SOCKET_URL = import.meta.env.VITE_BASE_API_URL; 
+// // const SOCKET_URL = 'https://244d-202-164-149-48.ngrok-free.app'; 
+// const socketIo = io(SOCKET_URL);
+
+
+
+// export const initSocket = (userId) => {
+//   socketIo.emit("join", { userId });
+    
+//   };
+
+// export default socketIo;

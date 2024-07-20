@@ -23,6 +23,15 @@ function CreatePostContent() {
     const newImages = Array.from(event.target.files); // Convert FileList to array
     setImages((prevImages) => [...prevImages, ...newImages]); // Update images state efficiently
 
+    const validImageTypes = ['image/png', 'image/jpeg'];
+    for (const image of newImages) {
+      if (!validImageTypes.includes(image.type)) {
+        toast.error(`${image.name} is not a valid image (png/jpeg).`);
+        return;
+      }
+    }
+
+
     const reader = new FileReader();
     reader.onload = () => {
       setImageSrcs((prevSrcs) => [...prevSrcs, reader.result]); // Update image previews
@@ -36,6 +45,22 @@ function CreatePostContent() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!caption.trim()) {
+      toast.error('Caption is required.');
+      return;
+    }
+
+    if (images.length === 0) {
+      toast.error('At least one image must be selected.');
+      return;
+    }
+
+    if (!tag.trim()) {
+      toast.error('Tag is required.');
+      return;
+    }
+
     setLoading(true)
 
     const formData = new FormData(); // Use FormData for multiple file uploads
@@ -94,19 +119,18 @@ function CreatePostContent() {
                   <div className='flex flex-col gap-2 justify-center items-center w-full'>
 
                   {imageSrcs.map((src, index) => (
-              <img
-                key={index}
-                src={src}
-                alt={`image-${index}`}
-                style={{ maxWidth: '200px', maxHeight: '200px', margin: '10px' }}
-              />
-            ))}
+                  <img
+                    key={index}
+                    src={src}
+                    alt={`image-${index}`}
+                    style={{ maxWidth: '200px', maxHeight: '200px', margin: '10px' }}
+                  />
+                  ))}
 
-
-                  {/* {
-                    imageSrc? (<img src={imageSrc} alt="upload-image" className='text-white' />) :
+                  {
+                    imageSrcs.length=== 0 && 
                     (<img src="/images/file-upload.svg" alt="upload-image" className='text-white' />)
-                  } */}
+                  }
                     <button type="button" className='w-full h-10 text-white rounded-lg'
                       style={{ backgroundColor: "#5c5c7b" }}
                       onClick={handleImage}
@@ -161,7 +185,7 @@ function CreatePostContent() {
               className="w-5 h-5 mx-auto" // Adjust image size and position as needed
               />
             ) : (
-            <span>Edit</span>
+            <span>Upload</span>
             )}
             </button>
           </form>

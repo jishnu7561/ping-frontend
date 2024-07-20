@@ -32,6 +32,17 @@ function EditPostContent() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!caption.trim()) {
+      toast.error('Caption is required.');
+      return;
+    }
+
+    if (!tag.trim()) {
+      toast.error('Tag is required.');
+      return;
+    }
+
     setLoading(true);
     request(
       'POST',

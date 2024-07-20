@@ -31,9 +31,9 @@ function AdminSidebar() {
             />
             <div className='flex flex-col'>
               <p className='font-semibold text-green'>
-                {loggedUser?.name || 'Username'}
+                {loggedUser?.accountName || 'Username'}
               </p>
-              <p className='font-thin text-grey text-sm'>
+              <p className='font-thin text-white text-sm'>
                 {loggedUser?.email || 'user@example.com'}
               </p>
             </div>
@@ -43,7 +43,7 @@ function AdminSidebar() {
         <ul className='flex flex-col gap-6 font-sans  text-white'>
           <NavLink to={"/admin/dashboard"}>
           <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/admin/dashboard' && 'bg-green'} cursor-pointer`}>
-            <i className={`fa-regular fa-house px-5 text-green group-hover:text-white`} ></i>
+            <i className={`fa-regular fa-house px-5 text-green group-hover:text-white ${pathname === '/admin/dashboard' && 'text-white'} ${!pathname === '/admin/dashboard' && 'md:hidden'}`} ></i>
             <p className='md:hidden lg:block'>Dashboard</p>
           </li>
           </NavLink>
@@ -55,25 +55,25 @@ function AdminSidebar() {
           </NavLink>
           <NavLink to={"/admin/reports"}>
             <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/admin/reports' && 'bg-green'} cursor-pointer`}>
-              <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/admin/reports' && 'text-white'} ${!pathname === '/admin/reports' && 'md:hidden'}`} ></i>
+              <i className={`fa-regular fa-circle-exclamation px-5 text-green group-hover:text-white ${pathname === '/admin/reports' && 'text-white'} ${!pathname === '/admin/reports' && 'md:hidden'}`} ></i>
               <p className='md:hidden lg:block'>Reports</p>
             </li>    
           </NavLink>
-          <NavLink to={"/message"}>
-            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/message' && 'bg-green'} cursor-pointer`}>
-              <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/message' && 'text-white'} ${!pathname === '/message' && 'md:hidden'}`} ></i>
-              <p className='md:hidden lg:block'>Message</p>
+          <NavLink to={"/admin/chat"}>
+            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/admin/chat' && 'bg-green'} cursor-pointer`}>
+              <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/admin/chat' && 'text-white'} ${!pathname === '/admin/chat' && 'md:hidden'}`} ></i>
+              <p className='md:hidden lg:block'>Chat</p>
             </li>
           </NavLink>
-          <NavLink to={"/create-post"}>
+          {/* <NavLink to={"/create-post"}>
             <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/create-post' && 'bg-green'} cursor-pointer`}>
               <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/create-post' && 'text-white'} ${!pathname === '/create-post' && 'md:hidden'}`} ></i>
               <p className='md:hidden lg:block'>Message</p>
             </li>
-          </NavLink>
+          </NavLink> */}
           <NavLink to={"/login"} onClick={logout}>
           <li className='py-2 mt-10 cursor-pointer text-sm'>
-            <i className="fa-regular fa-right-from-bracket text-green px-5"></i>Logout</li>
+            <i className="fa-regular fa-right-from-bracket text-red px-5"></i>Logout</li>
           </NavLink>
         </ul>
         </nav>

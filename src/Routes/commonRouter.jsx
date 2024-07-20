@@ -15,6 +15,7 @@ import SinglePost from '../Pages/User/singlePost/singlePost'
 import EditPost from '../Pages/User/editPost/editPost'
 import ChatPage from '../Pages/chatPage/chatPage'
 import ChatPageContent from '../Pages/chatPage/chatPageContent'
+import Notication from '../Pages/notification/notication'
 
 function CommonRouter() {
   return (
@@ -33,6 +34,7 @@ function CommonRouter() {
           <Route path='/edit-post/:postId' element={<EditPost/>} />
           <Route path='/chat' element={<ChatPage/>} />
           <Route path="/chat/:chatId" element={<ChatPage />} />
+          <Route path='/notifications' element={<Notication />} />
         </Route>
         {/* <Route path="/*" element={<NotFound />} /> */}
     </Routes>

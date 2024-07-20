@@ -13,7 +13,9 @@ module.exports = {
       'nav-color':'#24272C',
       'sidebar':'#323232',
       'red':'#FF0000',
-      'light_gray':'#4a4a46'
+      'light_gray':'#4a4a46',
+      'blue':'#00B2FF',
+      'pink':'#FF00C7'
     },
     extend: {},
   },

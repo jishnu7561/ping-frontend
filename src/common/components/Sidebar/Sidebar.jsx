@@ -1,13 +1,53 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link,NavLink, useLocation,useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { setAuthToken } from '../../utils/APIs/UserApis'
+import request, { setAuthToken } from '../../utils/APIs/UserApis'
 import { toast } from 'sonner'
+import SockJS from 'sockjs-client'
+import { over } from 'stompjs'
 
 const Sidebar =() => {
   const {pathname} = useLocation()
   const {loggedUser} = useSelector((state)=>state.auth)
   const navigate  = useNavigate();
+  const [count,setCount] = useState(0)
+
+  let stompClient = null;
+
+  let socket = new SockJS('http://localhost:8085/ws'); 
+  stompClient = over(socket);
+
+  useEffect(() => {
+      stompClient.connect({}, onConnected, onError);
+
+      request("GET",`/chat/notificationCount/${loggedUser.id}`,{})
+    .then((response)=>{
+        console.log("notification count: ",response)
+        setCount(response.data);
+    }).catch((error)=>{
+        console.log("count error: ",error)
+    })
+  }, [loggedUser.id]);
+
+  const onConnected = () => {
+      console.log('Connected to WebSocket');
+      stompClient.subscribe(`/chat/notification/${loggedUser.id}`, onMessageReceived);
+      
+  };
+
+
+  const onMessageReceived = (payload) => {
+      console.log("Notification received...");
+      // const notification = JSON.parse(payload.body);
+      // console.log("Notification content: ", notification);
+      setCount(prevCount => prevCount + 1);
+
+  };
+
+  const onError = (error) => {
+      console.error('WebSocket error:', error);
+  };
+
 
   const logout = () => {
     setAuthToken(null);
@@ -46,12 +86,20 @@ const Sidebar =() => {
             <p className='md:hidden lg:block'>Profile</p>
           </li>
           </NavLink>
-          <NavLink to={"/notification"}>
-            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/notification' && 'bg-green'} cursor-pointer`}>
-              <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/notification' && 'text-white'} ${!pathname === '/notification' && 'md:hidden'}`} ></i>
-              <p className='md:hidden lg:block'>Notification</p>
-            </li>    
-          </NavLink>
+          <NavLink to="/notifications">
+    <li className={`relative py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/notifications' && 'bg-green'} cursor-pointer`}>
+        <div className="relative">
+            <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/notifications' && 'text-white'} ${!pathname === '/notifications' && 'md:hidden'}`}></i>
+            {/* Notification count */}
+            {count > 0 && (
+                <span className={`absolute top-0 right-3 bg-green text-white text-xs rounded-3xl px-1 text-xs text-center`}>
+                    {count}
+                </span>
+            )}
+        </div>
+        <p className='md:hidden lg:block'>Notification</p>
+    </li>
+</NavLink>
           <NavLink to={"/chat"}>
             <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/chat' && 'bg-green'} cursor-pointer`}>
               <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/chat' && 'text-white'} ${!pathname === '/chat' && 'md:hidden'}`} ></i>

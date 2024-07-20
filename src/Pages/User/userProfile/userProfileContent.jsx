@@ -84,7 +84,7 @@ function UserProfileContent() {
 
             await request(
               "POST",
-              "/user/api/secure/request/sendFollowRequest",
+              "/user/api/secure/sendFollowRequest",
               {
                 followerId: loggedUser.id,
                 followingId: userId
