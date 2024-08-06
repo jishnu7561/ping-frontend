@@ -51,7 +51,7 @@ const onMessageDelete = () =>{
 
 const onMessageDeleted = (payload) => {
   const deletedMessageId = JSON.parse(payload.body);
-  alert(deletedMessageId);
+  // alert(deletedMessageId);
   setChatDetails(prevMessages => prevMessages.filter(message => message.id !== deletedMessageId));
 };
 
@@ -92,7 +92,7 @@ const onMessageReceived =(payload)=> {
     sender: payloadData.sender,
     receiver: payloadData.receiver,
     content: payloadData.content,
-    createdAt: new Date().toISOString(), 
+    createdAt: payloadData.createdAt, 
     chatId: payloadData.chatId 
   };
   console.log("chatDetails: ",chatDetails)
@@ -194,14 +194,7 @@ const setChange=()=>{
   };
 
   const handleMessageDelete =(id)=>{
-    alert(id)
-    // request("DELETE",`/chat/delete-message/${id}`,{}
-    // ).then((reponse)=>{
-    //   console.log("delete message resposne:",reponse)
-    //   setChatDetails(prevMessages => prevMessages.filter(message => message.id !== id));
-    //   }).catch((error)=>{
-    //     console.log("delete message error:",error)
-    //   })
+      setChatDetails(prevMessages => prevMessages.filter(message => message.id !== id));
 
     const messageData = {
       "chatId": chatId,
@@ -265,7 +258,7 @@ const setChange=()=>{
                         </div>
                         }
                         <div className='flex items-center pt-5 gap-2'>
-                        <p className='flex justify-end text-xs'>8:30 PM</p>
+                        <p className='flex justify-end text-xs'>{message.createdAt}</p>
                         {
                         message.sender === loggedUser.id
                         && (

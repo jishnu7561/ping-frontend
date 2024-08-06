@@ -13,6 +13,7 @@ function UserProfileContent() {
     const [followers,setFollowers] = useState([]);
     const [isPrivate, setIsPrivate] = useState(false); // For private status
     const [followRequestStatus, setFollowRequestStatus] = useState(null);
+    const [chatId,setChatId] = useState(null);
     const [data, setData] = useState({
       fullName:"",
       username:"",
@@ -33,7 +34,7 @@ function UserProfileContent() {
         // Use Promise.all to handle multiple asynchronous calls concurrently
         const fetchData = async () => {
           try {
-            const [profileResponse, postCountResponse,followResponse,followRequestStatusResponse] = await Promise.all([
+            const [profileResponse, postCountResponse,followResponse,followRequestStatusResponse,chatIdResponse] = await Promise.all([
               request("GET", `/user/api/secure/profile/${userId}`, {}),
               request("GET", `/post/getPostCount/${userId}`, {}),
               request("POST", `/user/api/secure/isFollowing/${loggedUser.id}`, {followingId:userId}),
@@ -112,6 +113,29 @@ function UserProfileContent() {
       };
 
 
+      const handleMessagClick = () => {
+        if (chatId == null) {
+            request("POST", `/chat/createChat/${userId}`, {})
+                .then((response) => {
+                    console.log("create chat response: ", response.data.chatId);
+                    const chatId = response.data.id;
+
+                    if (chatId) {
+                        navigate(`/chat/${chatId}`);
+                    } else {
+                        console.error("chatId is undefined in the response");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error creating chat: ", error);
+                    // Handle error response if necessary
+                });
+        } else {
+            navigate(`/chat/${data.chatId}`);
+        }
+    };
+
+
   return (
     <div className='w-full h-full bg-grey overflow-y-auto' style={{ '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
   <div className='flex flex-wrap w-full justify-center lg:p-10 '>
@@ -137,6 +161,7 @@ function UserProfileContent() {
                 ) : (
                   <button className='bg-green text-black px-4 py-1 rounded-lg font-medium text-sm' onClick={handleFollow}>Follow</button>
                 )}
+              <p className='text-black bg-green px-4 py-1 rounded-lg font-medium text-sm cursor-pointer' onClick={handleMessagClick}>Messsage</p>  
             </div>
           </div>
           <div className='flex justify-between' >

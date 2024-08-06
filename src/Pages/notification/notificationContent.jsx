@@ -4,10 +4,12 @@ import SockJS from 'sockjs-client';
 import { over } from 'stompjs';
 import request from '../../common/utils/APIs/UserApis';
 import Loader from '../../common/components/Loader';
+import { useNavigate } from 'react-router-dom';
 
 function NotificationContent() {
     const [notifications, setNotifications] = useState([]);
     const [isLoading,setLoading] = useState(true);
+    const navigate = useNavigate()
     let stompClient = null;
     const {loggedUser} = useSelector((state)=>state.auth)
 
@@ -44,7 +46,7 @@ function NotificationContent() {
         console.log("Notification received...");
         const notification = JSON.parse(payload.body);
         console.log("Notification content: ", notification);
-        setNotifications((prevNotifications) => [...prevNotifications, notification]);
+        setNotifications((prevNotifications) => [notification,...prevNotifications]);
     };
 
     const onError = (error) => {
@@ -184,10 +186,12 @@ function NotificationContent() {
                                         {renderNotificationContent(notification)}
                                         </div>
                                         <div className='flex gap-6 items-center'>
-                                        <p className='text-grey text-sm font-semibold'>9w</p>
+                                        <p className='text-grey text-sm font-semibold'>{notification.createdAt}</p>
 
                                         {(notification.type === 'LIKE' || notification.type === 'COMMENT') && (
-                                            <img src={notification.profileImage} alt="" className='w-10 h-10 rounded-xl' />
+                                            <img src={notification.postImage} alt="" className='w-10 h-10 rounded-xl cursor-pointer' 
+                                            onClick={()=>navigate(`/single-post/${notification.postId}`)}
+                                            />
                                         )}
                                         {(notification.type === 'FRIEND_REQUEST') &&
                                             (<div className='flex gap-3 items-center'>

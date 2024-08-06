@@ -73,7 +73,7 @@ const Sidebar =() => {
         </Link>
       </div>
       <nav className="flex flex-col content-between mx-10  ">
-        <ul className='flex flex-col gap-6 font-sans  text-white'>
+        <ul className='flex flex-col gap-5 font-sans  text-white'>
           <NavLink to={"/"}>
           <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/' && 'bg-green'} cursor-pointer`}>
             <i className={`fa-regular fa-house px-5 text-green group-hover:text-white ${pathname === '/' && 'text-white'} ${!pathname === '/' && 'md:hidden'}`} ></i>
@@ -86,20 +86,26 @@ const Sidebar =() => {
             <p className='md:hidden lg:block'>Profile</p>
           </li>
           </NavLink>
+          <NavLink to={"/explore"}>
+            <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/explore' && 'bg-green'} cursor-pointer`}>
+              <i className={`fa-regular  fa-magnifying-glass px-5 text-green group-hover:text-white ${pathname === '/explore' && 'text-white'} ${!pathname === '/explore' && 'md:hidden'}`} ></i>
+              <p className='md:hidden lg:block'>Explore</p>
+            </li>
+          </NavLink>
           <NavLink to="/notifications">
-    <li className={`relative py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/notifications' && 'bg-green'} cursor-pointer`}>
-        <div className="relative">
-            <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/notifications' && 'text-white'} ${!pathname === '/notifications' && 'md:hidden'}`}></i>
-            {/* Notification count */}
-            {count > 0 && (
+            <li className={`relative py-1 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/notifications' && 'bg-green'} cursor-pointer`}>
+              <div className="relative">
+                <i className={`fa-regular fa-bell px-5 text-green group-hover:text-white ${pathname === '/notifications' && 'text-white'} ${!pathname === '/notifications' && 'md:hidden'}`}></i>
+                {/* Notification count */}
+                {count > 0 && (
                 <span className={`absolute top-0 right-3 bg-green text-white text-xs rounded-3xl px-1 text-xs text-center`}>
                     {count}
                 </span>
-            )}
-        </div>
-        <p className='md:hidden lg:block'>Notification</p>
-    </li>
-</NavLink>
+                )}
+              </div>
+              <p className='md:hidden lg:block'>Notification</p>
+            </li>
+          </NavLink>
           <NavLink to={"/chat"}>
             <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/chat' && 'bg-green'} cursor-pointer`}>
               <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/chat' && 'text-white'} ${!pathname === '/chat' && 'md:hidden'}`} ></i>
@@ -108,13 +114,13 @@ const Sidebar =() => {
           </NavLink>
           <NavLink to={"/create-post"}>
             <li className={`py-2 group rounded-md hover:bg-green flex md:justify-center lg:justify-start items-center ${pathname === '/create-post' && 'bg-green'} cursor-pointer`}>
-              <i className={`fa-regular  fa-message-lines px-5 text-green group-hover:text-white ${pathname === '/create-post' && 'text-white'} ${!pathname === '/create-post' && 'md:hidden'}`} ></i>
+              <i className={`fa-regular  fa-image px-5 text-green group-hover:text-white ${pathname === '/create-post' && 'text-white'} ${!pathname === '/create-post' && 'md:hidden'}`} ></i>
               <p className='md:hidden lg:block'>Create</p>
             </li>
           </NavLink>
           <NavLink to={"/login"} onClick={logout}>
-          <li className='py-2 mt-10 cursor-pointer text-sm'>
-            <i className="fa-regular fa-right-from-bracket text-green px-5"></i>Logout</li>
+          <li className='py-2 mt-4 cursor-pointer text-sm'>
+            <i className="fa-regular fa-right-from-bracket text-red px-5"></i>Logout</li>
           </NavLink>
         </ul>
       </nav>

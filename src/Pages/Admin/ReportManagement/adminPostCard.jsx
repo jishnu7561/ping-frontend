@@ -2,9 +2,9 @@ import React, { useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import request from '../../../common/utils/APIs/UserApis';
-import Slider from 'react-slick';
 import { toast } from 'sonner';
 import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import Slider from '../../home/slider';
 
 function AdminPostCard(details) {
     const { imageUrl, fullName, caption,subscribed, createdAt,reportId, likesCount ,profile ,accountName,postId,liked,userId,saved,tag,onCommentClick } = details;
@@ -64,8 +64,6 @@ function AdminPostCard(details) {
 
     const handleDelete = () => {
         console.log(typeof postId);
-        alert(postId)
-        alert(reportId)
         
         if(!reason.trim()){
             toast.error("reason cannot be empty..")
@@ -115,33 +113,6 @@ function AdminPostCard(details) {
                     </div>
                 </div>
                 </div>
-                {/* <div className="relative pr-3 flex gap-2" ref={dropdownRef}>
-                <i className="fa-light fa-ellipsis-vertical text-white text-lg cursor-pointer" onClick={() => setDropdown(!dropdown)}></i>
-                    {dropdown && (
-                        <ul className="absolute top-full mt-2 right-0 bg-grey rounded-lg shadow-lg z-20 w-48 px-4 pb-4 text-white grid grid-cols-1 divide-y divide-light_gray" >
-                            <div className='flex justify-end py-2 cursor-pointer' onClick={()=>setDropdown(!dropdown)}>
-                            <i class="fa-solid fa-xmark"></i>
-                            </div>
-                            {loggedUser.id === userId && 
-                            <div className='flex text-white text-sm items-center px-4 py-2 gap-2 cursor-pointer' onClick={()=>navigate(`/edit-post/${postId}`)}>
-                                <i className="fa-light fa-pen-to-square"></i>
-                                <p className="dropdown-item hover:bg-gray ">Edit</p>
-                            </div>}
-                            <div className='flex text-white text-sm items-center px-4 py-2 gap-2 cursor-pointer'>
-                                <i className="fa-light fa-circle-user text-base"></i>
-                                <p className="dropdown-item hover:bg-gray ">Account details</p>
-                            </div>
-                            {loggedUser.id != userId && 
-                            <ReportPost postId={postId}/>
-                            }
-                        </ul>
-                    )}
-                </div> */}
-                {/* <Dropdown label="Dropdown button" dismissOnClick={false} className='bg-grey border-none'>
-                    <Dropdown.Item><i className="fa-light fa-ellipsis-vertical text-white"/>Edit</Dropdown.Item>
-                    <Dropdown.Item>Account Details</Dropdown.Item>
-                    <Dropdown.Item>Report</Dropdown.Item>
-                </Dropdown> */}
             </div>
             <div className='text-xs font-thin'>
                 <p className='text-white'>{caption}</p>

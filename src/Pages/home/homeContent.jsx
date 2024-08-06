@@ -40,7 +40,7 @@ function HomeContent() {
         .catch(error => {
             console.error('Error fetching data:', error);
             // logout();
-            toast.error(error.response? error.response.data.message : error);
+            toast.error("Internal server error");
         });
     }, [loggedUser.id]);
 

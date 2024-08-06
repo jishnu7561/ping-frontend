@@ -6,16 +6,19 @@ import Bottombar from '../../common/components/Bottombar/bottombar'
 
 function Explore() {
   return (
-    <div className='flex '>
-      <div className='flex'>
-        {/* <div className='flex-auto lg:w-[20%] hidden md:block fixed top-0'>
+    <div className='flex min-h-screen fixed'>
+      <div className='flex w-screen'>
+        <div className=' lg:w-[20%] md:w-[30%] hidden md:block '>
           <Sidebar />
-        </div> */}
-        <ExploreContent />
-      <div className='md:hidden sm:block'>
-        <Bottombar/>
+        </div>
+        <div className=' lg:w-[80%] md:w-[70%] w-full lg:h-screen h-full overflow-hidden '>
+          <ExploreContent />
+        </div>
+        
       </div>
-      </div>
+      <div className='md:hidden sm:block fixed bottom-0 z-50'>
+          <Bottombar/>
+        </div>
     </div>
   )
 }

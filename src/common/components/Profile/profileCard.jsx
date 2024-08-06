@@ -10,34 +10,36 @@ function ProfileCard({userId,handleChange}) {
     const [posts, setPosts] = useState([]);
     const [isSaved,setSaved] = useState(false);
     let id = userId;
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(2);
+    const [totalPages, setTotalPages] = useState(0);
 
 
-    useEffect(()=>{
-
-        if(!userId) {
-            // console.log("id of user  ="+userId)
+    useEffect(() => {
+        if (!userId) {
             id = loggedUser.id;
         }
-        // console.log("id of user="+id)
-        if(isSaved){ 
-            request("GET","/post/save/getSavedPosts",{})
-            .then((response)=>{
-                // console.log("saved post: ",response.data)
-                setPosts(response.data);
-            }).catch((error)=>{
-                toast.error(error);
-                console.log(error);
-            })
+        if (isSaved) {
+            request("GET", `/post/save/getSavedPosts?page=${currentPage}&size=${pageSize}`, {})
+                .then((response) => {
+                    setPosts(response.data.content);
+                    setTotalPages(response.data.totalPages);
+                }).catch((error) => {
+                    toast.error(error);
+                    console.log(error);
+                });
         } else {
-            request("GET",`/post/getUserPosts/${id}`,{})
-            .then((response)=>{
-                setPosts(response.data);
-            }).catch((error)=>{
-                toast.error(error)
-                console.log(error);
-            })
+            request("GET", `/post/getUserPosts/${id}?page=${currentPage}&size=${pageSize}`, {})
+                .then((response) => {
+                    setPosts(response.data.content);
+                    setTotalPages(response.data.totalPages);
+                }).catch((error) => {
+                    toast.error(error);
+                    console.log(error);
+                });
         }
-    },[isSaved,posts])
+    }, [isSaved, currentPage, pageSize]);
+    // },[isSaved,posts,isSaved, currentPage, pageSize])
     // isSaved,posts
 
     const handleSaved = (data) => () => {
@@ -53,6 +55,12 @@ function ProfileCard({userId,handleChange}) {
         setPosts(null);
         handleChange();
     }
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
 
 
@@ -82,6 +90,23 @@ function ProfileCard({userId,handleChange}) {
                 />
             ))}
             
+        </div>
+        <div className='flex justify-center items-center mt-24'>
+            <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 0}
+                className='text-white bg-black px-4 py-2 rounded'
+            >
+                Previous
+            </button>
+            <span className='text-white mx-2'>{`Page ${currentPage + 1} of ${totalPages}`}</span>
+            <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= totalPages - 1}
+                className='text-white bg-black px-4 py-2 rounded'
+            >
+                Next
+            </button>
         </div>
     </div>
   )

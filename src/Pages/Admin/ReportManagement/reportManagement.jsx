@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import request from '../../../common/utils/APIs/UserApis';
 import { useNavigate } from 'react-router-dom';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import { toast } from 'sonner';
 
 function ReportManagement() {
 
   const [isVisible, setIsVisible] = useState(false); // State to manage visibility
   const [reportDetails,setReportDetails] = useState([]);
   const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
+  const [response, setResponse] = useState('');
+  const [selectedReport, setSelectedReport] = useState(null);
 
   // Function to toggle visibility
   const toggleVisibility = () => {
@@ -22,6 +27,30 @@ function ReportManagement() {
       console.log("report error: ",error)
     })
   },[])
+
+  const handleSubmit = ()=>{
+    console.log("select report: ",selectedReport)
+    const encodedResponse = encodeURIComponent(response);
+    if(selectedReport != null ){
+    request("POST",`/user/api/admin/send-response?reporterId=${selectedReport.reporterId}&response=${response}&userName=${selectedReport.postUserName}`,{})
+    .then((response)=>{
+      console.log("send response: ",response)
+      toast.success(response.data.message);
+      setResponse('')
+      setOpenModal(false);
+    }).catch((error)=>{
+      console.log("send response error: ",error)
+      toast.error("Internal server errror, please try again.")
+      setResponse('')
+      setOpenModal(false);
+    })
+  }
+  }
+
+  const handleRespondClick =(details)=>{
+    setOpenModal(true);
+    setSelectedReport(details)
+  }
 
   return (
     <div className='w-full h-full bg-grey overflow-hidden overflow-y-auto' style={{ '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
@@ -53,62 +82,46 @@ function ReportManagement() {
                      {details.reportDescription}
                     {/* <span className="text-white font-bold"> user2 </span>  */}
                 </p>
-                <p className='text-white'>[April 2 2024]</p>
-                <button className='bg-green rounded-xl font-medium mt-3 py-1' onClick={() => navigate(`/admin/user-post/${details.postId}/${details.reportId}`)}>View</button>
+                <p className='text-white'>{details.createdAt}</p>
+                <button className='bg-green rounded-xl font-medium mt-1 py-1' onClick={() => navigate(`/admin/user-post/${details.postId}/${details.reportId}`)}>View</button>
+                <button className='bg-green rounded-xl font-medium mt-1 mb-3 py-1' onClick={()=>handleRespondClick(details)}>Respond</button>
               </div>
-            </div>}
+            </div>}   
         </div>
         ))}
-        {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border-white">
-          <thead className="text-xs text-white uppercase ">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                User Name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Verification status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Block /UnBlock
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {alluser?.map((user) => {
-              return (
-                <tr key={user.id} className=" border-b dark:bg-gray-800 dark:border-gray-700">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-white whitespace-nowrap dark:text-white"
-                  >
-                    {user.fullName}
-                  </th>
-                  <td className="px-6 py-4 text-white">{user.email}</td>
-                  <td className="px-6 py-4 text-white">{user.role}
-                  </td>
-                  {user.role === 'USER' ?
-                    <td className="px-6 py-4">
-                    <a
-                      onClick={() => manageBlock(user.id)}
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      {user.blocked === false ? <button type="button" onClick={()=>manageBlock(user._id)} className="text-white bg-red bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Block</button> 
-                                : <button type="button" onClick={()=>manageBlock(user._id)} className="text-white bg-green bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">unBlock</button>}
 
-                    </a>
-                  </td>
-                  :
-                  <td className="px-6 py-4"></td>
-                  }
-                </tr>
-              );
-            })}
-          </tbody>
-        </table> */}
-        {/* </div> */}
+
+      <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
+            <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+              Send reponse to the reported user.
+            </h3>
+            <div className='pb-8 pt-5'>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Enter your response" />
+              </div>
+              <TextInput
+                id="response"
+                placeholder="response"
+                value={response}
+                onChange={(event) => setResponse(event.target.value)}
+                required
+              />
+            </div>
+            <div className="flex justify-center gap-4">
+              <Button className='bg-red border-none text-black cursor-pointer' onClick={handleSubmit}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button className='bg-white text-black cursor-pointer border-black' onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
       </div>
       {reportDetails?.length < 1 && 
          (<div className='text-white flex w-full items-center justify-center h-full'>

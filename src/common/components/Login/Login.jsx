@@ -55,6 +55,11 @@ function Login() {
           response.data.user.role === 'ADMIN' ? navigate("/admin/users") : navigate("/");
         } 
         else {
+          if(message === "account is blocked"){
+            toast.error("Your account has been blocked. Check your email for details.")
+            setError(message);
+            return;
+          }
           toast.error(message)
           setError(message);
         }
@@ -93,6 +98,10 @@ function Login() {
       console.error('Error during authentication:', error);
     }
   };
+
+  const handleForgotPassword =() =>{
+    navigate("/forgot-password");
+  }
 
 
   return (
@@ -133,6 +142,9 @@ function Login() {
               required
               className="bg-grey rounded-3xl pl-8  p-3 w-full border border-gray-300 focus:outline-none"
             />
+          </div>
+          <div className='flex flex-row-reverse w-full'>
+            <p className='text-white text-xs' onClick={handleForgotPassword}>forgot password?</p>
           </div>
           {error && <p className="text-center" style={{"color":"red"}}>{error}</p> }
           <button

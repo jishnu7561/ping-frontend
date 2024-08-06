@@ -192,6 +192,7 @@ const validateForm = () => {
                   type="file" 
                   ref={fileInputRef} 
                   style={{ display: 'none' }} 
+                  accept="image/png, image/jpeg" 
                   onChange={handleFileChange} 
                 />
                </div> 

@@ -16,6 +16,9 @@ import EditPost from '../Pages/User/editPost/editPost'
 import ChatPage from '../Pages/chatPage/chatPage'
 import ChatPageContent from '../Pages/chatPage/chatPageContent'
 import Notication from '../Pages/notification/notication'
+import ForgotPassword from '../common/components/Login/forgotPassword'
+import ResetPassword from '../common/components/Login/resetPassword'
+import ExploreContent from '../Pages/explore/exploreContent'
 
 function CommonRouter() {
   return (
@@ -23,6 +26,8 @@ function CommonRouter() {
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/login' element={<Login/>} />
         <Route path='/otp-verification' element={<OTP/>} />
+        <Route path='/forgot-password' element={<ForgotPassword/>} />
+        <Route path='/reset-password/:token' element={<ResetPassword />} />
         <Route element={<Userprotect/>}>
           <Route path='/profile' element={<Profile/>} />
           <Route path='/profile/:userId' element={<UserProfile />} /> 
@@ -35,6 +40,7 @@ function CommonRouter() {
           <Route path='/chat' element={<ChatPage/>} />
           <Route path="/chat/:chatId" element={<ChatPage />} />
           <Route path='/notifications' element={<Notication />} />
+          <Route path='/explore' element={<ExploreContent />} />
         </Route>
         {/* <Route path="/*" element={<NotFound />} /> */}
     </Routes>

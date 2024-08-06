@@ -4,6 +4,7 @@ import request from '../../../common/utils/APIs/UserApis';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Swal from 'sweetalert2';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
 
 function UserManagement() {
     const { loggedUser } = useSelector((state) => state.auth);
@@ -11,6 +12,9 @@ function UserManagement() {
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [reason,setReason] = useState('')
+    const [openModal, setOpenModal] = useState(false);
+    const [userId,setUserId] = useState();
 
     const fetchUsers = (search = '', page = 0) => {
         request(
@@ -40,42 +44,81 @@ function UserManagement() {
     };
 
     const manageBlock = async (id) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this action!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, proceed!",
-            cancelButtonText: "Cancel",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const response = await request("GET", `/user/api/admin/block-user/${id}`, {});
-                    if (response.data?.message) {
-                        const message = response.data.message;
-                        if (message.includes("Success")) {
-                            toast.success("successfully edited");
-                            setAllusers((prevUsers) => {
-                                return prevUsers.map(user => {
-                                    if (user.id === id) {
-                                        return { ...user, blocked: !user.blocked };
-                                    }
-                                    return user;
-                                });
-                            });
-                        } else {
-                            toast.error(message);
-                        }
-                    } else {
-                        console.error("Unexpected response format");
+        alert(id)
+        setUserId(id)
+        setReason('')
+        // Swal.fire({
+        //     title: "Are you sure?",
+        //     text: "You won't be able to revert this action!",
+        //     icon: "warning",
+        //     showCancelButton: true,
+        //     confirmButtonColor: "#3085d6",
+        //     cancelButtonColor: "#d33",
+        //     confirmButtonText: "Yes, proceed!",
+        //     cancelButtonText: "Cancel",
+        // }).then(async (result) => {
+        //     if (result.isConfirmed) {
+        //         try {
+        //             const response = await request("GET", `/user/api/admin/block-user/${id}`, {});
+        //             if (response.data?.message) {
+        //                 const message = response.data.message;
+        //                 if (message.includes("Success")) {
+        //                     toast.success("successfully edited");
+        //                     setAllusers((prevUsers) => {
+        //                         return prevUsers.map(user => {
+        //                             if (user.id === id) {
+        //                                 return { ...user, blocked: !user.blocked };
+        //                             }
+        //                             return user;
+        //                         });
+        //                     });
+        //                 } else {
+        //                     toast.error(message);
+        //                 }
+        //             } else {
+        //                 console.error("Unexpected response format");
+        //             }
+        //         } catch (error) {
+        //             console.error("Error:", error);
+        //         }
+        //     }
+        // });
+        setOpenModal(true)
+    };
+
+    const handleBlock = async() => {
+        console.log(typeof postId);
+       
+        if(!reason.trim()){
+            toast.error("reason cannot be empty..")
+            return;
+        }
+        try {
+            const response = await request("GET", `/user/api/admin/block-user?id=${userId}&reason=${reason}`, {});
+            if (response.data?.message) {
+                const message = response.data.message;
+                if (message.includes("Success")) {
+                    toast.success("successfully edited");
+                    setOpenModal(false)
+                    setAllusers((prevUsers) => {
+                    return prevUsers.map(user => {
+                    if (user.id === userId) {
+                        return { ...user, blocked: !user.blocked };
                     }
-                } catch (error) {
-                    console.error("Error:", error);
-                }
+                    return user;
+                });
+            });
+            } else {
+                toast.error(message);
+                setOpenModal(false)
             }
-        });
+            } else {
+                console.error("Unexpected response format");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            setOpenModal(false)
+        }
     };
 
     return (
@@ -153,6 +196,43 @@ function UserManagement() {
                         </div>
                     </div>
                 </div>
+
+                <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+            <Modal.Header />
+            <Modal.Body>
+          <div className="text-center flex flex-col">
+            {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
+            <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+            Are you sure? 
+            </h3>
+            <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+            You won't be able to revert this action!{userId}
+            </h3>
+            <div className='pb-8 pt-5'>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Enter the reason" />
+              </div>
+              <TextInput
+                id="reason"
+                placeholder="reason"
+                value={reason}
+                onChange={(event) => setReason(event.target.value)}
+                required
+              />
+            </div>
+            <div className="flex justify-center gap-4">
+              <Button className='bg-red border-none text-black cursor-pointer' onClick={handleBlock}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button className='bg-white text-black cursor-pointer border-black' onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+
             </div>
         </div>
     );

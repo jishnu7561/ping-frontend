@@ -88,7 +88,10 @@ function CreatePostContent() {
       })
       .catch((error) => {
         console.log(error);
-        toast.error(error);
+        toast.error(error?.response.data.message);
+        setImages([]); // Clear images state after successful upload
+        setImageSrcs([]);
+        
       });
   };
 
@@ -140,6 +143,7 @@ function CreatePostContent() {
                     <input type="file"
                       ref={fileInputRef}
                       style={{ display: 'none' }}
+                      accept="image/png, image/jpeg" 
                       multiple
                       onChange={handleFileChange}
                     />
