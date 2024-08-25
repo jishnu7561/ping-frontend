@@ -163,6 +163,7 @@ const CommentContent = ({ handleClose, postId, comments, setComments }) => {
   });
 
   const commentHandler = async () => {
+    alert()
     if(!comment.trim()) {
       toast.error("Comment cannot be empty")
       return;

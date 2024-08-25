@@ -13,7 +13,8 @@ function NotificationContent() {
     let stompClient = null;
     const {loggedUser} = useSelector((state)=>state.auth)
 
-    let socket = new SockJS('http://localhost:8085/ws'); 
+    // let socket = new SockJS('http://localhost:8085/ws'); 
+    let socket = new SockJS('https://chat.cravehub.online/ws'); 
     stompClient = over(socket);
 
     useEffect(() => {
