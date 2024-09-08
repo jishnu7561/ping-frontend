@@ -1,7 +1,9 @@
 import axios from "axios";
 
 // axios.defaults.baseURL = "http://localhost:8080"
-axios.defaults.baseURL = "https://cravehub.online"
+// axios.defaults.baseURL = "https://cravehub.online"
+axios.defaults.baseURL = "http://139.59.13.146:8080"
+
 
 export const getAuthToken = () => {
     return window.localStorage.getItem("auth_token");
