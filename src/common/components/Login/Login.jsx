@@ -75,7 +75,7 @@ function Login() {
 
   const handlGoogleAuth = async (credential) => {
     try {
-      const response = await axios.post('http://cravehub.online/user/api/auth/google', {
+      const response = await axios.post('https://cravehub.online/user/api/auth/google', {
         token: credential
       });
       if (response.data) {
