@@ -252,7 +252,7 @@ function ChatPageContent() {
 
     var stompClient = null;
 // let socket = new SockJS('http://localhost:8085/ws'); // Replace with your server endpoint
-let socket = new SockJS('https://chat.cravehub.online/ws'); 
+let socket = new SockJS('https://chat.cravehub.site/ws'); 
 stompClient = over(socket);
 
 

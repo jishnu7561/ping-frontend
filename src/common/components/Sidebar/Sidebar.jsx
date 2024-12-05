@@ -15,7 +15,7 @@ const Sidebar =() => {
   let stompClient = null;
 
   // let socket = new SockJS('http://localhost:8085/ws'); 
-  let socket = new SockJS('https://chat.cravehub.online/ws'); 
+  let socket = new SockJS('https://chat.cravehub.site/ws'); 
   stompClient = over(socket);
 
   useEffect(() => {
